@@ -1,13 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import MiniSearch from "minisearch";
-import { listFiles, exportGoogleDocAsText } from "../../../ivisa-product-hub/src/lib/drive";
+import {
+  listFiles,
+  exportGoogleDocAsText,
+} from "../lib/drive";
 
 export type DriveFile = {
   id: string;
   name: string;
   mimeType: string;
   modifiedTime: string;
-  owners?: any[];
+  owners?: { displayName?: string; emailAddress?: string }[];
+
   iconLink?: string;
   webViewLink?: string;
 };
