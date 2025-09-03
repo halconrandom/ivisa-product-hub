@@ -5,12 +5,12 @@ export default function DocList({
   files,
   onOpen,
 }: {
-  files: DriveFile[];
+  files?: DriveFile[]; // ✅ makes it optional/undefined-safe
   onOpen: (f: DriveFile) => void;
 }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-      {files.map((f) => (
+      {(files || []).map((f) => (
         <DocCard key={f.id} f={f} onOpen={() => onOpen(f)} />
       ))}
     </div>
