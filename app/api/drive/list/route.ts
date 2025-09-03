@@ -17,5 +17,7 @@ export async function POST() {
     fields: "files(id, name, mimeType, modifiedTime, owners, iconLink, webViewLink)",
   });
 
+  console.log("📁 Files returned from Google Drive:", res.data.files); // <-- Add this
+
   return NextResponse.json(res.data.files);
 }

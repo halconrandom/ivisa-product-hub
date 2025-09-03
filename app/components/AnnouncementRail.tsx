@@ -3,7 +3,7 @@ import { useState } from "react";
 import { seedAnnouncements } from "../data/announcements";
 
 export default function AnnouncementRail() {
-  const [items, setItems] = useState(seedAnnouncements);
+  const [items, setItems] = useState(seedAnnouncements || []);
   function dismiss(id: string) {
     setItems((s) => s.filter((i) => i.id !== id));
   }

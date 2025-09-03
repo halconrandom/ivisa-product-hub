@@ -1,17 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import MiniSearch from "minisearch";
-import {
-  listFiles,
-  exportGoogleDocAsText,
-} from "../lib/drive";
+import { listFiles, exportGoogleDocAsText } from "../lib/drive";
 
 export type DriveFile = {
   id: string;
   name: string;
   mimeType: string;
   modifiedTime: string;
-  owners?: { displayName?: string; emailAddress?: string }[];
-
+  owners?: any[];
   iconLink?: string;
   webViewLink?: string;
 };
@@ -33,54 +29,54 @@ export function useDrive() {
     []
   );
 
+  // Fetch the files once on mount
   useEffect(() => {
-    (async () => {
+    async function fetchFiles() {
       try {
+        const res = await listFiles();
+        console.log("📦 useDrive loaded files:", res);
+        setFiles(res);
         setReady(true);
-        // Our serverless API already filters to Docs/PDFs in a specific folder.
-        const result = await listFiles();
-        setFiles(result.files);
-      } catch (e) {
-        console.warn("Drive list failed:", e);
+      } catch (err) {
+        console.error("❌ Failed to load files:", err);
       }
-    })();
+    }
+
+    fetchFiles();
   }, []);
 
+  // Update search index when files change
   useEffect(() => {
     index.removeAll();
-    if (files.length) index.addAll(files);
+    if (Array.isArray(files) && files.length) {
+      index.addAll(files);
+    }
   }, [files, index]);
 
+  // Select a file and load its content
   async function selectFile(f: DriveFile) {
     setSelected(f);
-    setDocText("");
-    if (f.mimeType === "application/vnd.google-apps.document") {
-      try {
-        const text = await exportGoogleDocAsText(f.id);
-        setDocText(text);
-      } catch (e) {
-        console.warn("Doc export failed:", e);
-      }
-    } else {
-      // TODO v0.2: add pdfjs text extraction for PDFs
-      setDocText("");
+    setDocText(""); // clear old content
+    try {
+      const res = await exportGoogleDocAsText(f.id);
+      setDocText(res.text);
+    } catch (err) {
+      console.error("❌ Failed to export doc:", err);
     }
   }
 
-  const filtered = useMemo(() => {
-    if (!q.trim()) return files;
-    const ids = new Set(index.search(q).map((r) => r.id));
-    return files.filter((f) => ids.has(f.id));
-  }, [q, files, index]);
+const results = useMemo(() => {
+  if (!q) return files;
+  return index.search(q).map((r) => files.find((f) => f.id === r.id)!);
+}, [q, files, index]);
 
   return {
     ready,
-    files: filtered,
-    allFiles: files,
+    files: results,
     selected,
     selectFile,
+    docText,
     q,
     setQ,
-    docText,
   };
 }
