@@ -7,7 +7,8 @@ import PreviewPane from "./components/PreviewPane";
 import { useDrive } from "./hooks/useDrive";
 
 export default function App() {
-  const { files, selected, selectFile, q, setQ, docText } = useDrive();
+  const { files, selected, selectFile, q, setQ, docText, openBestMatch } =
+    useDrive();
   const [showRight] = useState(true);
 
   return (
@@ -19,8 +20,8 @@ export default function App() {
     >
       <Sidebar />
       <main className="flex flex-col">
-        <div className="p-3 flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800">
-          <SearchBar value={q} onChange={setQ} />
+        <div className="p-3 flex max-w-full items-center justify-between border-b border-neutral-200 dark:border-neutral-800">
+          <SearchBar value={q} onChange={setQ} onSubmit={openBestMatch} />
           <div className="text-xs opacity-60 hidden md:block">
             Tip: ⌘K / CTRL+K to focus search
           </div>
