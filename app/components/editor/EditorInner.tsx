@@ -250,7 +250,9 @@ export default function EditorInner() {
       <div className="p-4">
         <input
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setTitle(e.target.value)
+          }
           placeholder="Announcement title..."
           className="w-full rounded-2xl px-4 py-3 bg-white dark:bg-[#0f1b22]
                      border border-black/10 dark:border-white/10

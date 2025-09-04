@@ -7,7 +7,7 @@ export type DriveFile = {
   name: string;
   mimeType: string;
   modifiedTime: string;
-  owners?: any[];
+  owners?: { displayName?: string; email?: string }[];
   iconLink?: string;
   webViewLink?: string;
   text?: string; // for internal search
