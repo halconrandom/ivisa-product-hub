@@ -1,6 +1,9 @@
-"use client";
 import App from "./App";
-
+import { AdminViewProvider } from "./hooks/useAdminView";
 export default function Page() {
-  return <App />;
+  return (
+    <AdminViewProvider>
+      <App />
+    </AdminViewProvider>
+  );
 }
